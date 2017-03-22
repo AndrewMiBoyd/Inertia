@@ -11,6 +11,8 @@ public class SpaceMover : Unit
 	public int inertiaI = 0;
 	public int inertiaJ = 0;
 	public int inertiaK = 0;
+	public int rotationalPosition = 0;
+	public int rotationalVelocity = 0;
 
 	public void SimplifyInertia() {
 		while (inertiaK < 0)
@@ -28,6 +30,21 @@ public class SpaceMover : Unit
 		}
 	
 	}
+
+	public void SetPosition(int positionChange) {
+
+		rotationalPosition += positionChange;
+
+		while (rotationalPosition < 0) {
+			rotationalPosition += 6;
+		}
+			
+		if (rotationalPosition >= 6) {
+			rotationalPosition %= 6;
+		}
+			
+	}
+		
 	public int jModifier(){
 		int positionModifer = 0;
 

@@ -1,0 +1,1 @@
+-On EndTurn() call, skip animations, and skip right to finished state

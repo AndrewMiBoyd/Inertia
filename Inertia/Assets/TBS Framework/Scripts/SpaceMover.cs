@@ -11,8 +11,10 @@ public class SpaceMover : Unit
 	public int inertiaI = 0;
 	public int inertiaJ = 0;
 	public int inertiaK = 0;
+	public int positionChange = 0;
 	public int rotationalPosition = 0;
-	public int rotationalVelocity = 0;
+	public int rotationalInertia = 0;
+	public int acceleration = 0;
 
 	public void SimplifyInertia() {
 		while (inertiaK < 0)
@@ -31,10 +33,11 @@ public class SpaceMover : Unit
 	
 	}
 
-	public void SetPosition(int positionChange) {
+	// rotates unit
+	public void SetRotationalPosition(int positionChange) {
 
-		rotationalPosition += positionChange;
-
+		rotationalPosition = -positionChange;
+	
 		while (rotationalPosition < 0) {
 			rotationalPosition += 6;
 		}
@@ -42,7 +45,53 @@ public class SpaceMover : Unit
 		if (rotationalPosition >= 6) {
 			rotationalPosition %= 6;
 		}
-			
+
+		int localPosition = rotationalPosition;
+		localPosition *= 60;
+
+		transform.eulerAngles = new Vector3 (0.0f, 0.0f, localPosition);
+
+	}
+
+	//adds new inertia each turn
+	public void ApplyAcceleration(int acceleration) { 
+
+		switch(positionChange) {
+		case 0:
+			inertiaI += acceleration;
+			break;
+		case 1:
+			inertiaJ += acceleration;
+			break;
+		case 2:
+			inertiaK += acceleration;
+			break;
+		case 3:
+			inertiaI -= acceleration;
+			break;
+		case 4:
+			inertiaJ += acceleration;
+			break;
+		case 5:
+			inertiaK += acceleration;
+			break;
+		}
+
+	}
+
+	//moves the ship each turn
+	public void MoveShip() { 
+
+		List<Cell> cellList = cellgrid.Cells;
+
+		SimplifyInertia ();
+		// TODO define inertia
+		Cell destination = cellList[cellList.IndexOf(Cell) + inertiaI * 26 + jModifier()];
+		List<Cell> destinationList = new List<Cell> ();
+		destinationList.Add (destination);
+
+		Move (destination, destinationList);
+
 	}
 		
 	public int jModifier(){
@@ -72,8 +121,6 @@ public class SpaceMover : Unit
 			}
 		}
 		return positionModifer;
-		
-
 	}
 	/*
 	public override void Move(Cell destinationCell, List<Cell> path) {
@@ -90,35 +137,36 @@ public class SpaceMover : Unit
 	}
 */
 	public override void OnTurnStart() {
+		Debug.Log("Space SpaceMover OnTurnStart called");
 		MovementPoints = TotalMovementPoints;
 		ActionPoints = TotalActionPoints;
 
 		SetState(new UnitStateMarkedAsFriendly(this));
 
+		SetRotationalPosition (positionChange);
+		ApplyAcceleration (acceleration);
+		MoveShip ();
 
 
-		List<Cell> cellList = cellgrid.Cells;
+		//TODO 100
+		//int number = cellgrid.GetComponents<RectangularHexGridGenerator>
+	}
+
+	/// <summary>
+	/// Method is called at the end of each turn.
+	/// </summary>
+	public override void OnTurnEnd()
+	{
 		Debug.Log("Space SpaceMover OnTurnEnd called");
-		SimplifyInertia ();
-		// TODO define inertia
-		Cell destination = cellList[cellList.IndexOf(Cell) + inertiaI * 26 + jModifier()];
-		List<Cell> destinationList = new List<Cell> ();
-		destinationList.Add (destination);
-
-		Move (destination, destinationList);
-
 		Buffs.FindAll(b => b.Duration == 0).ForEach(b => { b.Undo(this); });
 		Buffs.RemoveAll(b => b.Duration == 0);
 		Buffs.ForEach(b => { b.Duration--; });
 
 		SetState(new UnitStateNormal(this));
-
-		//TODO 100
-		//int number = cellgrid.GetComponents<RectangularHexGridGenerator>
-
 	}
 
-		
+
+
 	public int movesPerTurn = 2;
 	public int attacksPerTurn = 1;
 

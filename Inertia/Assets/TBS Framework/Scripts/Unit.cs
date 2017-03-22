@@ -174,7 +174,7 @@ public abstract class Unit : MonoBehaviour
             return;
         if (!IsUnitAttackable(other, Cell))
             return;
-
+		
         MarkAsAttacking(other);
         ActionPoints--;
         other.Defend(this, AttackFactor);

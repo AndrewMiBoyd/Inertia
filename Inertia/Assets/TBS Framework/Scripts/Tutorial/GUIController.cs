@@ -11,5 +11,10 @@ public class GUIController : MonoBehaviour
 
 	void Update ()
     {
+        if(Input.GetKeyDown(KeyCode.N))
+        {
+            CellGrid.EndTurn();//User ends his turn by pressing "n" on keyboard.
+			Debug.Log("A Turn Occured");
+        }
 	}
 }

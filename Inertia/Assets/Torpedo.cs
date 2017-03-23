@@ -5,4 +5,3 @@ using UnityEngine;
 public class Torpedo : MyUnit {
 	
 }
-//blahblahblah

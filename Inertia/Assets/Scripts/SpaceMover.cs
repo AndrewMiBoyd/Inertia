@@ -50,7 +50,10 @@ public class SpaceMover : Unit
 		localPosition *= 60;
 
 		transform.eulerAngles = new Vector3 (0.0f, 0.0f, localPosition);
+	}
 
+	public void RotateByAmount(int amount) {
+		SetRotationalPosition (amount);
 	}
 
 	//adds new inertia each turn

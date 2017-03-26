@@ -53,7 +53,8 @@ public class SpaceMover : Unit
 	}
 
 	public void RotateByAmount(int amount) {
-		SetRotationalPosition (amount);
+		rotationalPosition += amount;
+		SetRotationalPosition (rotationalPosition);
 	}
 
 	//adds new inertia each turn

@@ -14,7 +14,7 @@ public class SpaceMover : Unit
 	public int positionChange = 0;
 	public int rotationalPosition = 0;
 	public int rotationalInertia = 0;
-	public int acceleration = 0;
+
 
 	public void SimplifyInertia() {
 		while (inertiaK < 0)
@@ -57,6 +57,28 @@ public class SpaceMover : Unit
 		SetRotationalPosition (rotationalPosition);
 	}
 
+    public void parseInstructions(string instructions)
+    {
+        foreach(char c in instructions)
+        {
+            if (c == 'a')
+            {
+                ApplyAcceleration(1);
+            }
+            else if (c == 'r')
+            {
+                if (rotationalInertia < 0)
+                {
+                    RotateByAmount(-1);
+                }
+                else
+                {
+                    RotateByAmount(1);
+                }
+            }
+        }
+
+    }
 	//adds new inertia each turn
 	public void ApplyAcceleration(int acceleration) { 
 
@@ -147,8 +169,7 @@ public class SpaceMover : Unit
 
 		SetState(new UnitStateMarkedAsFriendly(this));
 
-		SetRotationalPosition (positionChange);
-		ApplyAcceleration (acceleration);
+        SetRotationalPosition(positionChange);
 		MoveShip ();
 
 
@@ -242,11 +263,11 @@ public class SpaceMover : Unit
 		Highlighter = transform.Find("Highlighter");
 		if (Highlighter != null)
 		{
-			Highlighter.position = transform.position + new Vector3(0, 0, 1.5f);
+			//Highlighter.position = transform.position + new Vector3(0, 0, 1.5f);
 			foreach (Transform cubeTransform in Highlighter)
 				Destroy(cubeTransform.GetComponent<BoxCollider>());
 		}     
-		gameObject.transform.position = Cell.transform.position + new Vector3(0, 0, -1.5f);
+		//gameObject.transform.position = Cell.transform.position + new Vector3(0, 0, -1.5f);
 	}
 		
 	public override void MarkAsAttacking(Unit other)
@@ -292,7 +313,7 @@ public class SpaceMover : Unit
 
 		SetColor(PlayerColor);
 	}
-
+    
 	public override void MarkAsFriendly()
 	{
 		SetHighlighterColor(new Color(0.8f,1,0.8f));
@@ -315,7 +336,7 @@ public class SpaceMover : Unit
 		SetColor(PlayerColor);
 		SetHighlighterColor(Color.white);
 		if (Highlighter == null) return;
-		Highlighter.position = transform.position + new Vector3(0, 0, 1.52f);
+		//Highlighter.position = transform.position + new Vector3(0, 0, 1.52f);
 	}
 
 	private void UpdateHpBar()
@@ -336,7 +357,7 @@ public class SpaceMover : Unit
 
 		if (Highlighter == null) return;
 
-		Highlighter.position = transform.position + new Vector3(0, 0, 1.48f);
+		//Highlighter.position = transform.position + new Vector3(0, 0, 1.48f);
 		for (int i = 0; i < Highlighter.childCount; i++)
 		{
 			var rendererComponent = Highlighter.transform.GetChild(i).GetComponent<Renderer>();

@@ -12,7 +12,6 @@ public class SpaceMover : Unit
 	public int inertiaI = 0;
 	public int inertiaJ = 0;
 	public int inertiaK = 0;
-	public int positionChange = 0;
 	public int rotationalPosition = 0;
 	public int rotationalInertia = 0;
 
@@ -37,7 +36,7 @@ public class SpaceMover : Unit
 	// rotates unit
 	public void SetRotationalPosition(int positionChange) {
 
-		rotationalPosition = -positionChange;
+		rotationalPosition = positionChange;
 	
 		while (rotationalPosition < 0) {
 			rotationalPosition += 6;
@@ -50,7 +49,7 @@ public class SpaceMover : Unit
 		int localPosition = rotationalPosition;
 		localPosition *= 60;
 
-		//transform.eulerAngles = new Vector3 (0.0f, 0.0f, localPosition);
+		transform.eulerAngles = new Vector3 (0.0f, 0.0f, localPosition);
 	}
 
 	public void RotateByAmount(int amount) {
@@ -62,11 +61,11 @@ public class SpaceMover : Unit
     {
         foreach(char c in instructions)
         {
-            if (c == 'a')
+            if (c == 'A')
             {
                 ApplyAcceleration(1);
             }
-            else if (c == 'r')
+            else if (c == 'T')
             {
                 if (rotationalInertia < 0)
                 {
@@ -83,7 +82,7 @@ public class SpaceMover : Unit
 	//adds new inertia each turn
 	public void ApplyAcceleration(int acceleration) { 
 
-		switch(positionChange) {
+		switch(rotationalPosition) {
 		case 0:
 			inertiaI += acceleration;
 			break;
@@ -97,10 +96,10 @@ public class SpaceMover : Unit
 			inertiaI -= acceleration;
 			break;
 		case 4:
-			inertiaJ += acceleration;
+			inertiaJ -= acceleration;
 			break;
 		case 5:
-			inertiaK += acceleration;
+			inertiaK -= acceleration;
 			break;
 		}
 
@@ -170,7 +169,6 @@ public class SpaceMover : Unit
 
 		SetState(new UnitStateMarkedAsFriendly(this));
 
-        SetRotationalPosition(positionChange);
 		MoveShip ();
 
 
@@ -184,6 +182,7 @@ public class SpaceMover : Unit
 	public override void OnTurnEnd()
 	{
 		Debug.Log("Space SpaceMover OnTurnEnd called");
+        parseInstructions(CreateOrderOfAction(rotationalInertia, 1));
 		Buffs.FindAll(b => b.Duration == 0).ForEach(b => { b.Undo(this); });
 		Buffs.RemoveAll(b => b.Duration == 0);
 		Buffs.ForEach(b => { b.Duration--; });
@@ -367,7 +366,7 @@ public class SpaceMover : Unit
 		}
 	}
 
-    public string createOrderOfAction(int rotationalInertia, int acceleration)
+    public string CreateOrderOfAction(int rotationalInertia, int acceleration)
     {
         List<string> actionOrder = new List<string>();
 

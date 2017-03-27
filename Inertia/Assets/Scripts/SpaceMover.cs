@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System; // for MATH
 using UnityEngine.UI;
 
 public class SpaceMover : Unit
@@ -49,7 +50,7 @@ public class SpaceMover : Unit
 		int localPosition = rotationalPosition;
 		localPosition *= 60;
 
-		transform.eulerAngles = new Vector3 (0.0f, 0.0f, localPosition);
+		//transform.eulerAngles = new Vector3 (0.0f, 0.0f, localPosition);
 	}
 
 	public void RotateByAmount(int amount) {
@@ -263,11 +264,11 @@ public class SpaceMover : Unit
 		Highlighter = transform.Find("Highlighter");
 		if (Highlighter != null)
 		{
-			//Highlighter.position = transform.position + new Vector3(0, 0, 1.5f);
+			Highlighter.position = transform.position + new Vector3(0, 0, 1.5f);
 			foreach (Transform cubeTransform in Highlighter)
 				Destroy(cubeTransform.GetComponent<BoxCollider>());
 		}     
-		//gameObject.transform.position = Cell.transform.position + new Vector3(0, 0, -1.5f);
+		gameObject.transform.position = Cell.transform.position + new Vector3(0, 0, -1.5f);
 	}
 		
 	public override void MarkAsAttacking(Unit other)
@@ -336,7 +337,7 @@ public class SpaceMover : Unit
 		SetColor(PlayerColor);
 		SetHighlighterColor(Color.white);
 		if (Highlighter == null) return;
-		//Highlighter.position = transform.position + new Vector3(0, 0, 1.52f);
+		Highlighter.position = transform.position + new Vector3(0, 0, 1.52f);
 	}
 
 	private void UpdateHpBar()
@@ -357,7 +358,7 @@ public class SpaceMover : Unit
 
 		if (Highlighter == null) return;
 
-		//Highlighter.position = transform.position + new Vector3(0, 0, 1.48f);
+		Highlighter.position = transform.position + new Vector3(0, 0, 1.48f);
 		for (int i = 0; i < Highlighter.childCount; i++)
 		{
 			var rendererComponent = Highlighter.transform.GetChild(i).GetComponent<Renderer>();
@@ -366,5 +367,86 @@ public class SpaceMover : Unit
 		}
 	}
 
+    public string createOrderOfAction(int rotationalInertia, int acceleration)
+    {
+        List<string> actionOrder = new List<string>();
 
+        int absoluteRotation = Math.Abs(rotationalInertia);
+
+        actionOrder.Add("");
+        actionOrder.Add("");
+        actionOrder.Add("");
+        actionOrder.Add("");
+
+        int i = actionOrder.Count / 2;
+
+        int turnsHalf = rotationalInertia / 2;
+        int accelerationHalf = acceleration / 2;
+
+        int leftOverRotation = rotationalInertia % 2;
+        int leftOverAcceleration = acceleration % 2;
+
+        while (turnsHalf > 1 || accelerationHalf > 1)
+        {
+            if (turnsHalf > accelerationHalf)
+            {
+                actionOrder.Insert(i + 1, "T");
+                actionOrder.Insert(i + 1, "T");
+                turnsHalf -= 2;
+                i = actionOrder.Count / 2;
+            }
+            else if (turnsHalf < accelerationHalf)
+            {
+                actionOrder.Insert(i + 1, "A");
+                actionOrder.Insert(i + 1, "A");
+                accelerationHalf -= 2;
+                i = actionOrder.Count / 2;
+            }
+            else if (turnsHalf == accelerationHalf)
+            {
+                actionOrder.Insert(i + 1, "A");
+                actionOrder.Insert(i + 1, "T");
+                turnsHalf -= 1;
+                accelerationHalf--;
+                i = actionOrder.Count / 2;
+            }
+        }
+
+        while (accelerationHalf + turnsHalf > 0)
+        {
+            if (accelerationHalf > 0)
+            {
+                actionOrder.Insert(i + 1, "A");
+                accelerationHalf--;
+                i = actionOrder.Count / 2;
+            }
+            if (turnsHalf > 0)
+            {
+                actionOrder.Insert(i + 1, "T");
+                turnsHalf--;
+                i = actionOrder.Count / 2;
+            }
+        }
+        List<string> temp = new List<string>(actionOrder);
+        temp.Reverse();
+        temp.InsertRange(temp.Count, actionOrder);
+        actionOrder = temp;
+
+        i = actionOrder.Count / 2;
+        while (leftOverAcceleration > 0)
+        {
+            actionOrder.Insert(i + 1, "A");
+            leftOverAcceleration--;
+        }
+        while (leftOverRotation > 0)
+        {
+            actionOrder.Insert(i + 1, "T");
+            leftOverRotation--;
+        }
+
+        Debug.Log(string.Join(string.Empty, actionOrder.ToArray()));
+
+        return string.Join(string.Empty, actionOrder.ToArray());
+
+    }
 }

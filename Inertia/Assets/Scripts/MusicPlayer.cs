@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class MusicPlayer : MonoBehaviour {
 
 	public AudioSource musicSource;
-	public AudioSource soundEffects;
+	//public AudioSource soundEffects;
 	public static MusicPlayer instance = null;                  
 
 	void Awake ()
@@ -25,16 +25,12 @@ public class MusicPlayer : MonoBehaviour {
 	}
 
 	public void ChangeEffectsVolume (float volume, Slider effectsSlider) {
-		soundEffects.volume = volume;
+		//soundEffects.volume = volume;
 		effectsSlider.value = volume;
 	}
 		
 	public void ChangeMasterVolume (float volume, Slider musicSlider, Slider effectsSlider) {
 		ChangeMusicVolume (volume, musicSlider);
 		ChangeEffectsVolume (volume, effectsSlider);
-	}
-
-	public void ValueChangedCheck(Slider musicSlider) {
-		musicSource.volume = musicSlider.value;
 	}
 }

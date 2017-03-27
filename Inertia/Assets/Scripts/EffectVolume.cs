@@ -7,8 +7,11 @@ public class EffectVolume : MonoBehaviour {
 
 	public Slider mySlider;
 
-	// Update is called once per frame
-	void Update () {
+	void Start () {
+		mySlider.onValueChanged.AddListener (delegate {ValueChangeCheck ();});
+	}
+
+	public void ValueChangeCheck() {
 		MusicPlayer.instance.ChangeEffectsVolume (mySlider.value, mySlider);
 	}
 }

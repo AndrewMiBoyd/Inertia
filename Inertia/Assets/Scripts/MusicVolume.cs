@@ -7,12 +7,11 @@ public class MusicVolume : MonoBehaviour {
 
 	public Slider mySlider;
 
-	// Update is called once per frame
-	void Update () {
-		MusicPlayer.instance.ChangeMusicVolume (mySlider.value, mySlider);
+	void Start () {
+		mySlider.onValueChanged.AddListener (delegate {ValueChangeCheck ();});
 	}
 
-//	public void OnValueChanged(Slider mySlider) {
-//		
-//	}
+	public void ValueChangeCheck() {
+		MusicPlayer.instance.ChangeMusicVolume (mySlider.value, mySlider);
+	}
 }

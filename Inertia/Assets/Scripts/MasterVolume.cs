@@ -9,8 +9,12 @@ public class MasterVolume : MonoBehaviour {
 	public Slider musicSlider;
 	public Slider effectsSlider;
 
-	// Update is called once per frame
-	void Update () {
+	void Start () {
+		mySlider.onValueChanged.AddListener (delegate {ValueChangeCheck ();});
+	}
+
+	public void ValueChangeCheck() {
 		MusicPlayer.instance.ChangeMasterVolume (mySlider.value, musicSlider, effectsSlider);
+
 	}
 }

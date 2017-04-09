@@ -8,30 +8,29 @@ using UnityEngine.UI;
 public class SpaceMover : Unit
 {
 
-	public CellGrid cellgrid;
-	public int inertiaI = 0;
-	public int inertiaJ = 0;
-	public int inertiaK = 0;
-	public int rotationalPosition = 0;
-	public int rotationalInertia = 0;
+    public CellGrid cellgrid; //for the love of all that is holy, generate the cell grid with the SAME WIDTH AND HEIGHT
+    public int inertiaI = 0;
+    public int inertiaJ = 0;
+    public int inertiaK = 0;
+    public int rotationalPosition = 0;
+    public int rotationalInertia = 0;
+    public static int gridSize = 27;
 
 
-	public void SimplifyInertia() {
-		while (inertiaK < 0)
-		{
-			inertiaI++;
-			inertiaJ--;
-			inertiaK++;
-		}
-		while (inertiaK > 0)
-		{
-			inertiaI--;
-			inertiaJ++;
-			inertiaK--;
-
-		}
-	
-	}
+    public void SimplifyInertia() {
+        while (inertiaK < 0)
+        {
+            inertiaI++;
+            inertiaJ--;
+            inertiaK++;
+        }
+        while (inertiaK > 0)
+        {
+            inertiaI--;
+            inertiaJ++;
+            inertiaK--;
+        }
+    }
 
 	// rotates unit
 	public void SetRotationalPosition(int positionChange) {
@@ -52,6 +51,76 @@ public class SpaceMover : Unit
 		transform.eulerAngles = new Vector3 (0.0f, 0.0f, localPosition);
 	}
 
+     public virtual void getNextCells(List<Vector3> list, Vector3 position, int possibleRange) {
+        if (possibleRange <0)
+            return;
+        possibleRange--;
+        list.Add(new Vector3(position.x + 1,position.y,position.z));
+        list.Add(new Vector3(position.x + 2, position.y, position.z));
+        list.Add(new Vector3(position.x + 1, position.y + 1, position.z));
+        list.Add(new Vector3(position.x + 1, position.y, position.z - 1));
+        getNextCells(list, new Vector3(position.x + 1, position.y + 1, position.z), possibleRange);
+        getNextCells(list, new Vector3(position.x + 1, position.y, position.z - 1), possibleRange);
+    }
+    public virtual void getNextCells(List<Vector3> list, Vector3 position) {
+        getNextCells(list, position, 0);
+
+    }
+
+    public override bool IsUnitAttackable(Unit other, Cell sourceCell)
+    {
+        Debug.Log("Cone is celcultated maybe");
+        Vector3 sourcePosition = findPosition(cellgrid, gridSize-1);
+        Vector3 otherPosition = other.findPosition(cellgrid, gridSize-1);
+        //if (sourceCell.GetDistance(other.Cell) <= AttackRange)
+        List<Vector3> vecList = new List<Vector3>();
+        vecList.Add(new Vector3(sourcePosition.x + 1, sourcePosition.y, sourcePosition.z));
+        getNextCells(vecList, new Vector3(1, 0, 0));
+        Debug.Log(otherPosition.ToString());
+        Debug.Log(vecList.Count());
+        for (int x = 0; x < vecList.Count(); x++){
+            Vector3 vec = vecList[x];
+            switch (rotationalPosition){
+                case 1:
+                    vec.y = vec.x;
+                    vec.z = vec.y;
+                    vec.x = -vec.z;
+                    break;
+                case 2:
+                    vec.y = -vec.z;
+                    vec.z = vec.x;
+                    vec.x = -vec.y;
+                    break;
+                case 3:
+                    vec.y = -vec.z;
+                    vec.z = -vec.y;
+                    vec.x = -vec.x;
+                    break;
+                case 4:
+                    vec.y = -vec.x;
+                    vec.z = -vec.y;
+                    vec.x = vec.z;
+                    break;
+                case 5:
+                    vec.y = vec.z;
+                    vec.z = -vec.x;
+                    vec.x = vec.y;
+                    break;
+                default:
+                    break;
+            }
+            SimplifyHexVector3(ref sourcePosition);
+            vec = vec + sourcePosition;
+
+            SimplifyHexVector3(ref vec);
+            Debug.Log(vec.ToString() + "   " + otherPosition.ToString());
+            if (vec.Equals(otherPosition))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 	public void RotateByAmount(int amount) {
 		rotationalPosition += amount;
 		SetRotationalPosition (rotationalPosition);
@@ -79,8 +148,10 @@ public class SpaceMover : Unit
         }
 
     }
-	//adds new inertia each turn
-	public void ApplyAcceleration(int acceleration) { 
+
+
+    //adds new inertia each turn
+    public void ApplyAcceleration(int acceleration) { 
 
 		switch(rotationalPosition) {
 		case 0:
@@ -111,12 +182,10 @@ public class SpaceMover : Unit
 		List<Cell> cellList = cellgrid.Cells;
 
 		SimplifyInertia ();
-		// TODO define inertia
-		Cell destination = cellList[cellList.IndexOf(Cell) + inertiaI * 26 + jModifier()];
+		Cell destination = cellList[cellList.IndexOf(Cell) + inertiaI * gridSize + jModifier()];
 		List<Cell> destinationList = new List<Cell> ();
 		destinationList.Add (destination);
-
-		Move (destination, destinationList);
+        Move (destination, destinationList);
 
 	}
 		
@@ -124,15 +193,15 @@ public class SpaceMover : Unit
 		int positionModifer = 0;
 
 		List<Cell> cellList = cellgrid.Cells;
-		int cellPosition = cellList.IndexOf (Cell);
+		int cellPosition = cellList.IndexOf(Cell);
 		Cell currentCell = Cell;
 		int i = inertiaJ;
 		if (i > 0) {
 			for (int jTransform = i; jTransform > 0; jTransform--) {
 				if ((cellPosition + positionModifer) % 2 == 0) {
 					positionModifer += 1;
-				} else {//TODO
-					positionModifer += 27;	
+				} else {
+					positionModifer += gridSize;	
 				}
 				 
 			}
@@ -140,8 +209,8 @@ public class SpaceMover : Unit
 		else {
 			for (int jTransform = i; jTransform < 0; jTransform++) {
 				if ((cellPosition + positionModifer) % 2 == 0) {
-					positionModifer -= 27;
-				} else {//TODO
+					positionModifer -= gridSize;
+				} else {
 					positionModifer -= 1;	
 				}
 			}

@@ -1,6 +1,6 @@
 var getNextCells = function(list, position)
 {
-    if (position.i + position.j + Math.abs(position.k) >4)
+    if (position.i + position.j + Math.abs(position.k) >20)
         return;
 
     list.push({

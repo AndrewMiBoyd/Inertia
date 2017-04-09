@@ -9,6 +9,7 @@ using System.Collections;
 /// </summary>
 public abstract class Unit : MonoBehaviour
 {
+
     /// <summary>
     /// UnitClicked event is invoked when user clicks the unit. It requires a collider on the unit game object to work.
     /// </summary>
@@ -240,10 +241,9 @@ public abstract class Unit : MonoBehaviour
 
         if (UnitMoved != null)
             UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, path));
-*/
-
-		
+*/	
     }
+
     protected virtual IEnumerator MovementAnimation(List<Cell> path)
     {
         isMoving = true;
@@ -261,6 +261,20 @@ public abstract class Unit : MonoBehaviour
         isMoving = false;
     }
 
+
+    public Vector3 findPosition(CellGrid cellgrid, int gridSize)
+    {
+        int cellPosition = cellgrid.Cells.IndexOf(Cell);
+        int i = cellPosition / gridSize;
+        int j = (cellPosition % gridSize) / 2;
+        if ((cellPosition % gridSize) % 2 != 0)
+        {
+            j += 1;
+        }
+        int k = (cellPosition % gridSize / 2);
+        Vector3 vector = (new Vector3(i, j, k));
+        SimplifyHexVector3(ref vector);
+        return vector;}
     ///<summary>
     /// Method indicates if unit is capable of moving to cell given as parameter.
     /// </summary>
@@ -358,6 +372,23 @@ public abstract class Unit : MonoBehaviour
     /// Method returns the unit to its base appearance
     /// </summary>
     public abstract void UnMark();
+
+    public void SimplifyHexVector3(ref Vector3 vector)
+    {
+        while (vector.z < 0)
+        {
+            vector.x++;
+            vector.y--;
+            vector.z++;
+        }
+        while (vector.z > 0)
+        {
+            vector.x--;
+            vector.y++;
+            vector.z--;
+        }
+    }
+
 }
 
 public class MovementEventArgs : EventArgs

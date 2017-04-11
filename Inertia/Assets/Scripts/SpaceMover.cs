@@ -70,56 +70,105 @@ public class SpaceMover : Unit
     public override bool IsUnitAttackable(Unit other, Cell sourceCell)
     {
         Debug.Log("Cone is celcultated maybe");
+		Boolean attackable = false;
+		List<Cell> cellList = cellgrid.Cells;
         Vector3 sourcePosition = findPosition(cellgrid, gridSize-1);
         Vector3 otherPosition = other.findPosition(cellgrid, gridSize-1);
         //if (sourceCell.GetDistance(other.Cell) <= AttackRange)
         List<Vector3> vecList = new List<Vector3>();
-        vecList.Add(new Vector3(sourcePosition.x + 1, sourcePosition.y, sourcePosition.z));
+        vecList.Add(new Vector3(1, 0, 0));
         getNextCells(vecList, new Vector3(1, 0, 0));
-        Debug.Log(otherPosition.ToString());
-        Debug.Log(vecList.Count());
-        for (int x = 0; x < vecList.Count(); x++){
-            Vector3 vec = vecList[x];
-            switch (rotationalPosition){
-                case 1:
-                    vec.y = vec.x;
-                    vec.z = vec.y;
-                    vec.x = -vec.z;
-                    break;
-                case 2:
-                    vec.y = -vec.z;
-                    vec.z = vec.x;
-                    vec.x = -vec.y;
-                    break;
-                case 3:
-                    vec.y = -vec.z;
-                    vec.z = -vec.y;
-                    vec.x = -vec.x;
-                    break;
-                case 4:
-                    vec.y = -vec.x;
-                    vec.z = -vec.y;
-                    vec.x = vec.z;
-                    break;
-                case 5:
-                    vec.y = vec.z;
-                    vec.z = -vec.x;
-                    vec.x = vec.y;
-                    break;
-                default:
-                    break;
-            }
-            SimplifyHexVector3(ref sourcePosition);
-            vec = vec + sourcePosition;
+        //Debug.Log(otherPosition.ToString());
+        //Debug.Log(vecList.Count());
+		for (int x = 0; x < vecList.Count (); x++) {
+			Vector3 vec = vecList [x];
+			switch (rotationalPosition) {
+			case 1:
+				vec.y = vec.x;
+				vec.z = vec.y;
+				vec.x = -vec.z;
+				break;
+			case 2:
+				vec.y = -vec.z;
+				vec.z = vec.x;
+				vec.x = -vec.y;
+				break;
+			case 3:
+				vec.y = -vec.z;
+				vec.z = -vec.y;
+				vec.x = -vec.x;
+				break;
+			case 4:
+				vec.y = -vec.x;
+				vec.z = -vec.y;
+				vec.x = vec.z;
+				break;
+			case 5:
+				vec.y = vec.z;
+				vec.z = -vec.x;
+				vec.x = vec.y;
+				break;
+			default:
+				break;
+			}
 
-            SimplifyHexVector3(ref vec);
-            Debug.Log(vec.ToString() + "   " + otherPosition.ToString());
-            if (vec.Equals(otherPosition))
-            {
-                return true;
-            }
-        }
-        return false;
+			/*
+			List<Cell> cellList = cellgrid.Cells;
+			int cellPosition = cellList.IndexOf(Cell);
+			Cell currentCell = Cell;
+			int i = inertiaJ;
+			if (i > 0) {
+				for (int jTransform = i; jTransform > 0; jTransform--) {
+					if ((cellPosition + positionModifer) % 2 == 0) {
+						positionModifer += 1;
+					} else {
+						positionModifer += gridSize;	
+					}
+
+				}
+			}
+			*/
+
+			int currentPosition = cellList.IndexOf (Cell);
+
+			SimplifyHexVector3 (ref vec);
+			Debug.Log (vec.ToString ());
+			currentPosition += (int)(vec.x * (gridSize-1));
+			for (int j = (int)vec.y; j > 0; j--) {
+				if (currentPosition % 2 == 0) {
+					currentPosition += 1;
+				} else {
+					currentPosition += gridSize;	
+				}
+			}
+			for (int j = (int)vec.y; j < 0; j++) {
+				if (currentPosition % 2 == 0) {
+					currentPosition -= gridSize;
+				} else {
+					currentPosition -= 1;	
+				}
+			}
+
+			Debug.Log(currentPosition);
+			cellList [currentPosition].MarkAsReachable ();
+
+
+
+
+			SimplifyHexVector3 (ref sourcePosition);
+
+			vec = vec + sourcePosition;
+
+				//Debug.Log (vec.ToString () + "   " + otherPosition.ToString ());
+
+				if (vec.Equals(otherPosition))
+				{
+					attackable = true;
+				}
+			}
+
+            
+		return attackable;
     }
 	public void RotateByAmount(int amount) {
 		rotationalPosition += amount;
@@ -217,6 +266,9 @@ public class SpaceMover : Unit
 		}
 		return positionModifer;
 	}
+
+
+
 	/*
 	public override void Move(Cell destinationCell, List<Cell> path) {
 		Cell.IsTaken = false;
@@ -251,7 +303,7 @@ public class SpaceMover : Unit
 	public override void OnTurnEnd()
 	{
 		Debug.Log("Space SpaceMover OnTurnEnd called");
-        parseInstructions(CreateOrderOfAction(rotationalInertia, 1));
+        parseInstructions(CreateOrderOfAction(rotationalInertia, 0));
 		Buffs.FindAll(b => b.Duration == 0).ForEach(b => { b.Undo(this); });
 		Buffs.RemoveAll(b => b.Duration == 0);
 		Buffs.ForEach(b => { b.Duration--; });

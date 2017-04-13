@@ -52,18 +52,26 @@ public class SpaceMover : Unit
 	}
 
      public virtual void getNextCells(List<Vector3> list, Vector3 position, int possibleRange) {
-        if (possibleRange <0)
+		if (position.x+position.y-position.z > possibleRange)
             return;
-        possibleRange--;
-        list.Add(new Vector3(position.x + 1,position.y,position.z));
-        list.Add(new Vector3(position.x + 2, position.y, position.z));
-        list.Add(new Vector3(position.x + 1, position.y + 1, position.z));
-        list.Add(new Vector3(position.x + 1, position.y, position.z - 1));
+		if (position.x + position.y - position.z + 1 <= possibleRange) { 
+			list.Add(new Vector3(position.x + 1,position.y,position.z));
+			list.Add (new Vector3 (position.x + 1, position.y + 1, position.z));
+			list.Add (new Vector3 (position.x + 1, position.y, position.z - 1));
+		}
+		if (position.x + position.y - position.z + 2  <= possibleRange) { 
+			list.Add (new Vector3 (position.x + 2, position.y, position.z));
+		}
+
+		if (position.x + position.y - position.z <= 1) { 
+			list.Add (new Vector3 (position.x + (possibleRange), position.y, position.z));
+		}
         getNextCells(list, new Vector3(position.x + 1, position.y + 1, position.z), possibleRange);
         getNextCells(list, new Vector3(position.x + 1, position.y, position.z - 1), possibleRange);
+		getNextCells(list, new Vector3(position.x + 1, position.y, position.z), possibleRange);
     }
     public virtual void getNextCells(List<Vector3> list, Vector3 position) {
-        getNextCells(list, position, 0);
+        getNextCells(list, position, 1);
 
     }
 
@@ -77,41 +85,50 @@ public class SpaceMover : Unit
         //if (sourceCell.GetDistance(other.Cell) <= AttackRange)
         List<Vector3> vecList = new List<Vector3>();
         vecList.Add(new Vector3(1, 0, 0));
-        getNextCells(vecList, new Vector3(1, 0, 0));
+        getNextCells(vecList, new Vector3(1, 0, 0), 9);
         //Debug.Log(otherPosition.ToString());
         //Debug.Log(vecList.Count());
+		String result = "";
+		foreach (Vector3 vec in vecList)
+		{
+			result = result + vec.ToString();
+		}
+		Debug.Log(result);
+		result = "";
+
 		for (int x = 0; x < vecList.Count (); x++) {
 			Vector3 vec = vecList [x];
+			Vector3 temp = new Vector3(vec.x,vec.y,vec.z);
 			switch (rotationalPosition) {
 			case 1:
-				vec.y = vec.x;
-				vec.z = vec.y;
-				vec.x = -vec.z;
+				vec.y = temp.x;
+				vec.z = temp.y;
+				vec.x = -temp.z;
 				break;
 			case 2:
-				vec.y = -vec.z;
-				vec.z = vec.x;
-				vec.x = -vec.y;
+				vec.y = -temp.z;
+				vec.z = temp.x;
+				vec.x = -temp.y;
 				break;
 			case 3:
-				vec.y = -vec.z;
-				vec.z = -vec.y;
-				vec.x = -vec.x;
+				vec.y = -temp.y;
+				vec.z = -temp.z;
+				vec.x = -temp.x;
 				break;
 			case 4:
-				vec.y = -vec.x;
-				vec.z = -vec.y;
-				vec.x = vec.z;
+				vec.y = -temp.x;
+				vec.z = -temp.y;
+				vec.x = temp.z;
 				break;
 			case 5:
-				vec.y = vec.z;
-				vec.z = -vec.x;
-				vec.x = vec.y;
+				vec.y = temp.z;
+				vec.z = -temp.x;
+				vec.x = temp.y;
 				break;
 			default:
 				break;
 			}
-
+			result = result + vec.ToString();
 			/*
 			List<Cell> cellList = cellgrid.Cells;
 			int cellPosition = cellList.IndexOf(Cell);
@@ -131,8 +148,9 @@ public class SpaceMover : Unit
 
 			int currentPosition = cellList.IndexOf (Cell);
 
+
 			SimplifyHexVector3 (ref vec);
-			Debug.Log (vec.ToString ());
+		//	Debug.Log (vec.ToString ());
 			currentPosition += (int)(vec.x * (gridSize-1));
 			for (int j = (int)vec.y; j > 0; j--) {
 				if (currentPosition % 2 == 0) {
@@ -149,11 +167,8 @@ public class SpaceMover : Unit
 				}
 			}
 
-			Debug.Log(currentPosition);
+		//	Debug.Log(currentPosition);
 			cellList [currentPosition].MarkAsReachable ();
-
-
-
 
 			SimplifyHexVector3 (ref sourcePosition);
 
@@ -165,11 +180,17 @@ public class SpaceMover : Unit
 				{
 					attackable = true;
 				}
+			//foreach (Vector3 vec in vecList)
+
+
+
+
 			}
 
-            
+		Debug.Log(result);
 		return attackable;
     }
+
 	public void RotateByAmount(int amount) {
 		rotationalPosition += amount;
 		SetRotationalPosition (rotationalPosition);

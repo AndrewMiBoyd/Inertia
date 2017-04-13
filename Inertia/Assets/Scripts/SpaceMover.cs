@@ -84,8 +84,8 @@ public class SpaceMover : Unit
         Vector3 otherPosition = other.findPosition(cellgrid, gridSize-1);
         //if (sourceCell.GetDistance(other.Cell) <= AttackRange)
         List<Vector3> vecList = new List<Vector3>();
-        vecList.Add(new Vector3(1, 0, 0));
-        getNextCells(vecList, new Vector3(1, 0, 0), 9);
+        //vecList.Add(new Vector3(1, 0, 0));
+        getNextCells(vecList, new Vector3(0, 0, 0), 9);
         //Debug.Log(otherPosition.ToString());
         //Debug.Log(vecList.Count());
 		String result = "";

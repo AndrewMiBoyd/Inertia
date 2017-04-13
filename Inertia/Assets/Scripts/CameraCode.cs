@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class CameraCode : MonoBehaviour
 {
-    public Camera camera;
+    public GameObject camera;
     void Update()
     {
         float xAxisValue = Input.GetAxis("Horizontal");

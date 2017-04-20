@@ -42,9 +42,9 @@ public class SpaceMover : Unit
 			rotationalPosition += 6;
 		}
 			
-		if (rotationalPosition >= 6) {
-			rotationalPosition %= 6;
-		}
+
+		rotationalPosition %= 6;
+		
 
 		int localPosition = rotationalPosition;
 		localPosition *= 60;
@@ -326,7 +326,6 @@ public class SpaceMover : Unit
 	public override void OnTurnEnd()
 	{
 		Debug.Log("Space SpaceMover OnTurnEnd called");
-		applyManuver(CreateOrderOfAction(rotationalInertia, 0));
 		Buffs.FindAll(b => b.Duration == 0).ForEach(b => { b.Undo(this); });
 		Buffs.RemoveAll(b => b.Duration == 0);
 		Buffs.ForEach(b => { b.Duration--; });

@@ -31,10 +31,23 @@ public class TurnManager : MonoBehaviour {
 		if (turnState >= 3)
 			turnState = 0;
 		else turnState++;
-		if (turnState == 0)
-			resetActionPoints ();
-		if (turnState == 2)
-			moveShips ();
+		switch (turnState) {
+		case 0:
+			resetActionPoints (); // resolve attacks(override DealDamage, store damage as string, resolve damage function), reset action points
+			//resolveAllDamage();
+			// player 1 manuver turn
+			break;
+		case 1:
+			// player 2 manuver turn
+			break;
+		case 2:
+			moveShips (); // resolve movements, set action points
+			//player 1 attack turn
+			break;
+		case 3:
+			//player 2 attack turn
+			break;
+		}
 	}
 
 	public void resetActionPoints() {

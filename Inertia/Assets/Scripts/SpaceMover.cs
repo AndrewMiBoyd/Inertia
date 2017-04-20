@@ -14,7 +14,8 @@ public class SpaceMover : Unit
     public int inertiaK = 0;
     public int rotationalPosition = 0;
     public int rotationalInertia = 0;
-    public static int gridSize = 27;
+    public static int gridSize = 26;
+	public string manuver = "A";
 
 
     public void SimplifyInertia() {
@@ -80,8 +81,8 @@ public class SpaceMover : Unit
         Debug.Log("Cone is celcultated maybe");
 		Boolean attackable = false;
 		List<Cell> cellList = cellgrid.Cells;
-        Vector3 sourcePosition = findPosition(cellgrid, gridSize-1);
-        Vector3 otherPosition = other.findPosition(cellgrid, gridSize-1);
+        Vector3 sourcePosition = findPosition(cellgrid, gridSize);
+        Vector3 otherPosition = other.findPosition(cellgrid, gridSize);
         //if (sourceCell.GetDistance(other.Cell) <= AttackRange)
         List<Vector3> vecList = new List<Vector3>();
         //vecList.Add(new Vector3(1, 0, 0));
@@ -151,17 +152,17 @@ public class SpaceMover : Unit
 
 			SimplifyHexVector3 (ref vec);
 		//	Debug.Log (vec.ToString ());
-			currentPosition += (int)(vec.x * (gridSize-1));
+			currentPosition += (int)(vec.x * (gridSize));
 			for (int j = (int)vec.y; j > 0; j--) {
 				if (currentPosition % 2 == 0) {
 					currentPosition += 1;
 				} else {
-					currentPosition += gridSize;	
+					currentPosition += gridSize+1;	
 				}
 			}
 			for (int j = (int)vec.y; j < 0; j++) {
 				if (currentPosition % 2 == 0) {
-					currentPosition -= gridSize;
+					currentPosition -= gridSize+1;
 				} else {
 					currentPosition -= 1;	
 				}
@@ -196,7 +197,7 @@ public class SpaceMover : Unit
 		SetRotationalPosition (rotationalPosition);
 	}
 
-    public void parseInstructions(string instructions)
+    public void applyManuver(string instructions)
     {
         foreach(char c in instructions)
         {
@@ -271,7 +272,7 @@ public class SpaceMover : Unit
 				if ((cellPosition + positionModifer) % 2 == 0) {
 					positionModifer += 1;
 				} else {
-					positionModifer += gridSize;	
+					positionModifer += (gridSize +1);	
 				}
 				 
 			}
@@ -279,7 +280,7 @@ public class SpaceMover : Unit
 		else {
 			for (int jTransform = i; jTransform < 0; jTransform++) {
 				if ((cellPosition + positionModifer) % 2 == 0) {
-					positionModifer -= gridSize;
+					positionModifer -= (gridSize+1);
 				} else {
 					positionModifer -= 1;	
 				}
@@ -306,12 +307,13 @@ public class SpaceMover : Unit
 */
 	public override void OnTurnStart() {
 		Debug.Log("Space SpaceMover OnTurnStart called");
+
 		MovementPoints = TotalMovementPoints;
-		ActionPoints = TotalActionPoints;
+		//ActionPoints = TotalActionPoints;
 
 		SetState(new UnitStateMarkedAsFriendly(this));
 
-		MoveShip ();
+		//MoveShip ();
 
 
 		//TODO 100
@@ -324,7 +326,7 @@ public class SpaceMover : Unit
 	public override void OnTurnEnd()
 	{
 		Debug.Log("Space SpaceMover OnTurnEnd called");
-        parseInstructions(CreateOrderOfAction(rotationalInertia, 0));
+		applyManuver(CreateOrderOfAction(rotationalInertia, 0));
 		Buffs.FindAll(b => b.Duration == 0).ForEach(b => { b.Undo(this); });
 		Buffs.RemoveAll(b => b.Duration == 0);
 		Buffs.ForEach(b => { b.Duration--; });

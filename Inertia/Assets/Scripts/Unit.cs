@@ -9,7 +9,6 @@ using System.Collections;
 /// </summary>
 public abstract class Unit : MonoBehaviour
 {
-
     /// <summary>
     /// UnitClicked event is invoked when user clicks the unit. It requires a collider on the unit game object to work.
     /// </summary>
@@ -49,6 +48,7 @@ public abstract class Unit : MonoBehaviour
     public int AttackRange;
     public int AttackFactor;
     public int DefenceFactor;
+    public int DamageToBeDealt;
     /// <summary>
     /// Determines how far on the grid the unit can move.
     /// </summary>
@@ -175,11 +175,13 @@ public abstract class Unit : MonoBehaviour
             return;
         if (!IsUnitAttackable(other, Cell))
             return;
-		
-        MarkAsAttacking(other);
+        int dieRoll = UnityEngine.Random.Range(0, 99);
+        if (dieRoll < (101 - (Cell.GetDistance(other.Cell) * Cell.GetDistance(other.Cell)))){
+            Debug.Log("Hit!");
+            MarkAsAttacking(other);
+            other.Defend(other, 1);
+        }
         ActionPoints--;
-        other.Defend(this, AttackFactor);
-
         if (ActionPoints == 0)
         {
             SetState(new UnitStateMarkedAsFinished(this));
@@ -192,7 +194,8 @@ public abstract class Unit : MonoBehaviour
     protected virtual void Defend(Unit other, int damage)
     {
         MarkAsDefending(other);
-        HitPoints -= Mathf.Clamp(damage - DefenceFactor, 1, damage);  //Damage is calculated by subtracting attack factor of attacker and defence factor of defender. If result is below 1, it is set to 1.
+
+       HitPoints -= Mathf.Clamp(damage - DefenceFactor, 1, damage);  //Damage is calculated by subtracting attack factor of attacker and defence factor of defender. If result is below 1, it is set to 1.
                                                                       //This behaviour can be overridden in derived classes.
         if (UnitAttacked != null)
             UnitAttacked.Invoke(this, new AttackEventArgs(other, this, damage));

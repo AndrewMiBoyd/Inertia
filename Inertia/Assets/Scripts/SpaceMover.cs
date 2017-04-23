@@ -231,6 +231,10 @@ public class SpaceMover : Unit
         }
         rotationalInertia = newRotationalInertia;
         manuver = "";
+        int i = 0;
+        while (i < rotationalInertia)
+        { manuver += "T"; i++; }
+
     }
 
 
@@ -383,22 +387,7 @@ public class SpaceMover : Unit
 	//end of added variables
 	*/
 	//based off Unit.cs
-	protected void Defend(Unit other, int damage) {
-		/*
-		var realDamage = damage;
 
-		//statements needed for hull, armor, and sheilds
-		if (other is Torpedo && sheilds <= 0)
-			Destroy (this); // ship is destroyed
-		else if (other is Torpedo && sheilds > 0) 
-			// what happens when shields are up and torpedo hits
-		base.Defend(other, realDamage);
-		*/
-	}
-
-	protected void Attack() {
-		//dice based 
-	}
 
 	protected void TorpedoHit() {
 		//call defend with torpedo and damage
@@ -437,8 +426,11 @@ public class SpaceMover : Unit
 	public override void MarkAsDestroyed()
 	{
 	}
-
-	private IEnumerator Jerk(Unit other)
+    public override void DealDamage(Unit other)
+    {
+        base.DealDamage(other);
+    }
+    private IEnumerator Jerk(Unit other)
 	{
 		var heading = other.transform.position - transform.position;
 		var direction = heading / heading.magnitude;

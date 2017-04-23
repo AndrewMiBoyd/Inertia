@@ -16,6 +16,7 @@ public class SpaceMover : Unit
     public int rotationalInertia = 0;
     public static int gridSize = 26;
 	public string manuver = "A";
+	public Log log;
 
 
     public void SimplifyInertia() {
@@ -306,8 +307,13 @@ public class SpaceMover : Unit
    
 	}
 */
+	private int testCount = 0;
 	public override void OnTurnStart() {
 		Debug.Log("Space SpaceMover OnTurnStart called");
+		log.AddEvent ("Turn start " + testCount);
+		testCount++;
+		log.AddEvent ("hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello");
+
 
 		MovementPoints = TotalMovementPoints;
 		//ActionPoints = TotalActionPoints;

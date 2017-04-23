@@ -5,17 +5,20 @@ using UnityEngine.UI;
 
 public class Log : MonoBehaviour {
 
-	private int maxLines = 10;
-	public List<GameObject> logUpdates;
+	private int maxLines = 20;
 	public Log eventLog;
 
 	public void AddEvent(string eventString) {
-
+		List<GameObject> logUpdates = new List<GameObject> ();
 		GameObject[] allLogUpdates = GameObject.FindGameObjectsWithTag ("logText");
+		foreach (GameObject obj in allLogUpdates)
+			logUpdates.Add (obj);
+		
 
 		//delete top log inputs after the maxLines is reached
-		if (allLogUpdates.Length > maxLines) {
-			Destroy (allLogUpdates [0]);
+		while (logUpdates.Count > maxLines) {
+			Destroy (logUpdates [0]);
+			logUpdates.RemoveAt(0);
 		}
 
 		//create new GameObject to add
@@ -35,10 +38,5 @@ public class Log : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		eventLog = GetComponent<Log> ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
 	}
 }

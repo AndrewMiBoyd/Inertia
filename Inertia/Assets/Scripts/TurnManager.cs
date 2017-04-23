@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour {
 
+	public Log eventLog;
 	public int turnState=0;
 	public List<GameObject> ships;
     public SpaceMover inUse;
@@ -35,19 +36,19 @@ public class TurnManager : MonoBehaviour {
 		else turnState++;
 		switch (turnState) {
 		case 0:
+			eventLog.AddEvent ("Player 1 Maneuver Turn");
 			resetActionPoints (); // resolve attacks(override DealDamage, store damage as string, resolve damage function), reset action points
 			//resolveAllDamage();
-			// player 1 manuver turn
 			break;
 		case 1:
-			// player 2 manuver turn
+			eventLog.AddEvent ("Player 2 Maneuver Turn");
 			break;
 		case 2:
+			eventLog.AddEvent ("Player 1 Attack Turn");
 			moveShips (); // resolve movements, set action points
-			//player 1 attack turn
 			break;
 		case 3:
-			//player 2 attack turn
+			eventLog.AddEvent ("Player 2 Attack Turn");
 			break;
 		}
 	}
@@ -72,5 +73,6 @@ public class TurnManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
 		getShips ();
+		eventLog.AddEvent ("Player 1 Maneuver Turn");
 	}
 }

@@ -321,11 +321,6 @@ public class SpaceMover : Unit
 */
 	private int testCount = 0;
 	public override void OnTurnStart() {
-		Debug.Log("Space SpaceMover OnTurnStart called");
-		log.AddEvent ("Turn start " + testCount);
-		testCount++;
-		log.AddEvent ("hello hello hello hello hello hello hello hello hello hello hello hello hello hello hello");
-
 
 		MovementPoints = TotalMovementPoints;
 		//ActionPoints = TotalActionPoints;

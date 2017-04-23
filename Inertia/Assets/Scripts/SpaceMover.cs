@@ -15,6 +15,7 @@ public class SpaceMover : Unit
     public int rotationalPosition = 0;
     public int rotationalInertia = 0;
     public static int gridSize = 26;
+	public Log log;
     public TurnManager turnManager;
 	public string manuver = "";
     public int rotationalDir = 0;
@@ -322,8 +323,8 @@ public class SpaceMover : Unit
    
 	}
 */
+	private int testCount = 0;
 	public override void OnTurnStart() {
-		Debug.Log("Space SpaceMover OnTurnStart called");
 
 		MovementPoints = TotalMovementPoints;
 		//ActionPoints = TotalActionPoints;

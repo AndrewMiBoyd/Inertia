@@ -168,8 +168,9 @@ public class SpaceMover : Unit
 				}
 			}
 
-		//	Debug.Log(currentPosition);
-			cellList [currentPosition].MarkAsReachable ();
+            //	Debug.Log(currentPosition);
+            if (currentPosition >=0 && currentPosition < gridSize*gridSize)
+			    cellList [currentPosition].MarkAsReachable ();
 
 			SimplifyHexVector3 (ref sourcePosition);
 

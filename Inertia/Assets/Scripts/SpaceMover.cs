@@ -15,7 +15,9 @@ public class SpaceMover : Unit
     public int rotationalPosition = 0;
     public int rotationalInertia = 0;
     public static int gridSize = 26;
-	public string manuver = "A";
+    public TurnManager turnManager;
+	public string manuver = "";
+    public int rotationalDir = 0;
 
 
     public void SimplifyInertia() {
@@ -200,25 +202,35 @@ public class SpaceMover : Unit
 
     public void applyManuver(string instructions)
     {
-        foreach(char c in instructions)
+        int newRotationalInertia = 0;
+        foreach (char c in instructions)
         {
             if (c == 'A')
             {
-                ApplyAcceleration(1);
+                if (instructions[0] == '-')
+                    ApplyAcceleration(-1);
+                else
+                {
+                    ApplyAcceleration(1);
+                }
+
             }
             else if (c == 'T')
             {
-                if (rotationalInertia < 0)
+                if (rotationalDir < 0)
                 {
+                    newRotationalInertia--;
                     RotateByAmount(-1);
                 }
-                else
+                else if (rotationalDir > 0)
                 {
+                    newRotationalInertia++;
                     RotateByAmount(1);
                 }
             }
         }
-
+        rotationalInertia = newRotationalInertia;
+        manuver = "";
     }
 
 
@@ -457,7 +469,14 @@ public class SpaceMover : Unit
 
 		SetColor(PlayerColor);
 	}
-    
+    public void setFutureRotationIncrement(int change)
+    {
+        
+    }
+    public void respondToManeuverButton()
+    {
+
+    }
 	public override void MarkAsFriendly()
 	{
 		SetHighlighterColor(new Color(0.8f,1,0.8f));
@@ -469,6 +488,7 @@ public class SpaceMover : Unit
 	public override void MarkAsSelected()
 	{
 		SetHighlighterColor(new Color(0,1,0));
+        turnManager.inUse = this;
 	}
 	public override void MarkAsFinished()
 	{
@@ -510,11 +530,18 @@ public class SpaceMover : Unit
 		}
 	}
 
-    public string CreateOrderOfAction(int rotationalInertia, int acceleration)
+    public string CreateOrderOfAction(int rotAccellerationChange, int accelleration)
     {
         List<string> actionOrder = new List<string>();
+        int nextRotation = rotationalInertia + rotAccellerationChange;
+        if (nextRotation > 0)
+            rotationalDir = 1;
+        else if (nextRotation < 0)
+            rotationalDir = -1;
 
-        int absoluteRotation = Math.Abs(rotationalInertia);
+   
+        int absAccelleration = Math.Abs(accelleration);
+        int absoluteRotation = Math.Abs(nextRotation);
 
         actionOrder.Add("");
         actionOrder.Add("");
@@ -523,11 +550,11 @@ public class SpaceMover : Unit
 
         int i = actionOrder.Count / 2;
 
-        int turnsHalf = rotationalInertia / 2;
-        int accelerationHalf = acceleration / 2;
+        int turnsHalf = absoluteRotation / 2;
+        int accelerationHalf = absAccelleration / 2;
 
-        int leftOverRotation = rotationalInertia % 2;
-        int leftOverAcceleration = acceleration % 2;
+        int leftOverRotation = absoluteRotation % 2;
+        int leftOverAcceleration = absAccelleration % 2;
 
         while (turnsHalf > 1 || accelerationHalf > 1)
         {
@@ -586,6 +613,9 @@ public class SpaceMover : Unit
             actionOrder.Insert(i + 1, "T");
             leftOverRotation--;
         }
+
+        if (accelleration < 1)
+            actionOrder.Insert(0, "-");
 
         Debug.Log(string.Join(string.Empty, actionOrder.ToArray()));
 

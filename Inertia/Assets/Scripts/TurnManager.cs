@@ -6,7 +6,7 @@ public class TurnManager : MonoBehaviour {
 
 	public int turnState=0;
 	public List<GameObject> ships;
-
+    public SpaceMover inUse;
 	public void getShips() {
 		ships = new List<GameObject>();
 		GameObject[] allShips = GameObject.FindGameObjectsWithTag ("Ship");
@@ -16,6 +16,7 @@ public class TurnManager : MonoBehaviour {
 				ships.Add (tester);
 			}
 		}
+
 	}
 
 	public void moveShips() {
@@ -28,7 +29,8 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void advanceTurnState() {
-		if (turnState >= 3)
+        inUse = null;
+        if (turnState >= 3)
 			turnState = 0;
 		else turnState++;
 		switch (turnState) {
@@ -56,16 +58,19 @@ public class TurnManager : MonoBehaviour {
 		}
 	}
 		
+    public void giveShipRotationalCommand(int change)
+    {
+        inUse.manuver = inUse.CreateOrderOfAction(change, 0);
+    }
+
+    public void giveShipLinearCommand(int change)
+    {
+        inUse.manuver = inUse.CreateOrderOfAction(0, change);
+    }
 
 
-
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start () {
 		getShips ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		//advanceTurnState ();
 	}
 }

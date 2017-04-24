@@ -69,7 +69,20 @@ public class TurnManager : MonoBehaviour {
         inUse.manuver = inUse.CreateOrderOfAction(0, change);
     }
 
+    public void accellerateAndTurn(int turn)
+    {
+        inUse.manuver = inUse.CreateOrderOfAction(turn, 1);
+    }
 
+
+
+    public void ApplyDamageToShips()
+    {
+        foreach (GameObject currentShip in ships)
+        {
+     //       currentShip.GetComponent<SpaceMover>().DealDamage(currentShip.GetComponent<SpaceMover>.other);
+        }
+    }
     // Use this for initialization
     void Start () {
 		getShips ();

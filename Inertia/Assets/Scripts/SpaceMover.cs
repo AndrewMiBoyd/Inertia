@@ -390,9 +390,7 @@ public class SpaceMover : Unit
 	//based off Unit.cs
 
 
-	protected void TorpedoHit() {
-		//call defend with torpedo and damage
-	}
+
 
 
 	public Color PlayerColor;
@@ -429,7 +427,29 @@ public class SpaceMover : Unit
 	}
     public override void DealDamage(Unit other)
     {
-        base.DealDamage(other);
+		if (isMoving)
+			return;
+		if (ActionPoints == 0)
+			return;
+		if (!IsUnitAttackable(other, Cell))
+			return;
+		int dieRoll = UnityEngine.Random.Range(0, 99);
+		if (dieRoll < (101 - (Cell.GetDistance(other.Cell) * Cell.GetDistance(other.Cell)))){
+			Debug.Log("Hit!");
+			MarkAsAttacking(other);
+			SpaceMover[] shipPair = new SpaceMover[2];
+			shipPair [0] = this.GetComponent<SpaceMover>();
+			shipPair [1] = other.GetComponent<SpaceMover>();
+			turnManager.shootingShips.Add (shipPair);
+		}
+		ActionPoints--;
+		if (ActionPoints == 0)
+		{
+			SetState(new UnitStateMarkedAsFinished(this));
+			MovementPoints = 0;
+		} 
+
+
     }
     private IEnumerator Jerk(Unit other)
 	{

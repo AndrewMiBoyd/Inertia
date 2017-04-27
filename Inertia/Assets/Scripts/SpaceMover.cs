@@ -52,7 +52,7 @@ public class SpaceMover : Unit
 		int localPosition = rotationalPosition;
 		localPosition *= 60;
 
-		transform.eulerAngles = new Vector3 (0.0f, 0.0f, localPosition);
+		transform.eulerAngles = new Vector3 (0.0f, 0.0f, -localPosition);
 	}
 
      public virtual void getNextCells(List<Vector3> list, Vector3 position, int possibleRange) {
@@ -437,10 +437,10 @@ public class SpaceMover : Unit
 		if (dieRoll < (101 - (Cell.GetDistance(other.Cell) * Cell.GetDistance(other.Cell)))){
 			Debug.Log("Hit!");
 			MarkAsAttacking(other);
-			SpaceMover[] shipPair = new SpaceMover[2];
-			shipPair [0] = this.GetComponent<SpaceMover>();
-			shipPair [1] = other.GetComponent<SpaceMover>();
-			turnManager.shootingShips.Add (shipPair);
+			//SpaceMover[] shipPair = new SpaceMover[2];
+			//shipPair [0] = this.GetComponent<SpaceMover>();
+			//shipPair [1] = other.GetComponent<SpaceMover>();
+			turnManager.shootingShips.Add (other.GetComponent<SpaceMover>());
 		}
 		ActionPoints--;
 		if (ActionPoints == 0)

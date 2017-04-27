@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour {
 
-	public List< SpaceMover [] > shootingShips = new List<SpaceMover []>();
+	public List<SpaceMover> shootingShips = new List<SpaceMover>();
 	public Log eventLog;
 	public int turnState=0;
 	public List<GameObject> ships;
@@ -40,12 +40,12 @@ public class TurnManager : MonoBehaviour {
 			eventLog.AddEvent ("Player 1 Maneuver Turn");
 			resetActionPoints (); // resolve attacks(override DealDamage, store damage as string, resolve damage function), reset action points
 			//resolveAllDamage();
-
+			Debug.Log ("ApplyDamageToShips Called");
+			ApplyDamageToShips ();
 			break;
 		case 1:
 			eventLog.AddEvent ("Player 2 Maneuver Turn");
-			Debug.Log ("ApplyDamageToShips Called");
-			ApplyDamageToShips ();
+
 			break;
 		case 2:
 			eventLog.AddEvent ("Player 1 Attack Turn");
@@ -81,16 +81,18 @@ public class TurnManager : MonoBehaviour {
     public void ApplyDamageToShips()
     {
 		Debug.Log ("ApplyDamageToShips Called");
-		foreach (SpaceMover[] currentShip in shootingShips)
+		foreach (SpaceMover currentShip in shootingShips)
         {
-			currentShip[1].GetComponent<SpaceMover> ().TakeDamage (currentShip[1].GetComponent<SpaceMover> (), 1);
-			break;
+			currentShip.TakeDamage (currentShip, 1);
         }
+		shootingShips.Clear ();
+		getShips ();
     }
 
     // Use this for initialization
     void Start () {
 		getShips ();
 		eventLog.AddEvent ("Player 1 Maneuver Turn");
+		resetActionPoints ();
 	}
 }

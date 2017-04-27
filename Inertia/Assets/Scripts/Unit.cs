@@ -394,9 +394,7 @@ public abstract class Unit : MonoBehaviour
 
 	public virtual void TakeDamage(Unit other, int damage)
 	{
-		//if () {
-		//	Defend (other, 1);
-		//}
+		Defend (other, 1);	
 	}
 }
 

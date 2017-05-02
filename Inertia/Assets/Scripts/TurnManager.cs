@@ -9,6 +9,7 @@ public class TurnManager : MonoBehaviour {
 	public int turnState=0;
 	public List<GameObject> ships;
     public SpaceMover inUse;
+	public LineRenderer inertiaLine;
 
 
 
@@ -37,6 +38,8 @@ public class TurnManager : MonoBehaviour {
 
 	public void advanceTurnState() {
         inUse = null;
+		inertiaLine.SetPosition (1, inertiaLine.GetPosition(0));
+
         if (turnState >= 3)
 			turnState = 0;
 		else turnState++;
@@ -99,11 +102,18 @@ public class TurnManager : MonoBehaviour {
 		}
 
     }
-
     // Use this for initialization
     void Start () {
 		getShips ();
 		eventLog.AddEvent ("Player 1 Maneuver Turn");
 		resetActionPoints ();
+	}
+	void Update() {
+		
+		if (inUse != null && (turnState ==1 || turnState == 0)) {
+			Vector3 position = inUse.transform.position;
+			inertiaLine.SetPosition (0, position);
+			inertiaLine.SetPosition (1, inUse.getFuturePosition ());
+		}
 	}
 }

@@ -542,7 +542,13 @@ public class SpaceMover : Unit
 				rendererComponent.material.color = color;
 		}
 	}
-
+	public Vector3 getFuturePosition() {
+		Vector3 vector = transform.position;
+		vector.x += inertiaJ*1.65497f;
+		vector.y += inertiaJ*0.95535f;
+		vector.y += inertiaI*1.91071f;
+		return vector;
+	}
     public string CreateOrderOfAction(int rotAccellerationChange, int accelleration)
     {
         List<string> actionOrder = new List<string>();

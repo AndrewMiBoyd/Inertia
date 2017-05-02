@@ -9,12 +9,16 @@ public class TurnManager : MonoBehaviour {
 	public int turnState=0;
 	public List<GameObject> ships;
     public SpaceMover inUse;
+
+
+
 	public void getShips() {
+		Debug.Log ("Get ships is called");
 		ships = new List<GameObject>();
 		GameObject[] allShips = GameObject.FindGameObjectsWithTag ("Ship");
 		for (int i = 0; i < allShips.Length; i++) {
 			GameObject tester = allShips [i];
-			if (tester.GetComponent (typeof(SpaceMover)) != null) {
+			if (tester.GetComponent (typeof(SpaceMover)) != null && tester != null) {
 				ships.Add (tester);
 			}
 		}
@@ -22,6 +26,7 @@ public class TurnManager : MonoBehaviour {
 	}
 
 	public void moveShips() {
+		getShips ();
 		foreach (GameObject currentShip in ships) {
 			SpaceMover currentSpaceMover = currentShip.GetComponent<SpaceMover> ();
 			currentSpaceMover.applyManuver (currentSpaceMover.manuver);
@@ -84,9 +89,15 @@ public class TurnManager : MonoBehaviour {
 		foreach (SpaceMover currentShip in shootingShips)
         {
 			currentShip.TakeDamage (currentShip, 1);
+			while(shootingShips.Remove(null)) {
+				;
+			}
         }
 		shootingShips.Clear ();
-		getShips ();
+		while(ships.Remove(null)) {
+			;
+		}
+
     }
 
     // Use this for initialization

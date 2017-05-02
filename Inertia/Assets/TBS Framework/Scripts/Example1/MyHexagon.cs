@@ -40,7 +40,7 @@ class MyHexagon : Hexagon
     }
     public override void MarkAsHighlighted()
     {
-        SetOutlineColor(Color.blue);
+        SetOutlineColor(Color.magenta);
     }
     public override void UnMark()
     {

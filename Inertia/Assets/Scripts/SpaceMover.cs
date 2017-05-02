@@ -14,7 +14,7 @@ public class SpaceMover : Unit
     public int inertiaK = 0;
     public int rotationalPosition = 0;
     public int rotationalInertia = 0;
-    public static int gridSize = 26;
+    public static int gridSize = 40;
 	public Log log;
     public TurnManager turnManager;
 	public string manuver = "";

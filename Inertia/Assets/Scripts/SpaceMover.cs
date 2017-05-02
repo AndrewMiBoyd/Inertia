@@ -14,11 +14,16 @@ public class SpaceMover : Unit
     public int inertiaK = 0;
     public int rotationalPosition = 0;
     public int rotationalInertia = 0;
-    public static int gridSize = 40;
+    public int gridSize;    
 	public Log log;
     public TurnManager turnManager;
 	public string manuver = "";
     public int rotationalDir = 0;
+
+    public void setGridSize()
+    {
+        gridSize = (int)(Math.Sqrt(cellgrid.Cells.Count));
+    }
 
 
     public void SimplifyInertia() {
@@ -325,7 +330,7 @@ public class SpaceMover : Unit
 */
 	private int testCount = 0;
 	public override void OnTurnStart() {
-
+        setGridSize();
 		MovementPoints = TotalMovementPoints;
 		//ActionPoints = TotalActionPoints;
 

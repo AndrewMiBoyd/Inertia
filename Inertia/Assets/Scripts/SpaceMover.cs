@@ -312,22 +312,6 @@ public class SpaceMover : Unit
 		return positionModifer;
 	}
 
-
-
-	/*
-	public override void Move(Cell destinationCell, List<Cell> path) {
-		Cell.IsTaken = false;
-		Cell = destinationCell;
-		destinationCell.IsTaken = true;
-
-
-		if (MovementSpeed >= 0)
-			StartCoroutine(MovementAnimation(path));
-		else
-			transform.position = Cell.transform.position;
-   
-	}
-*/
 	private int testCount = 0;
 	public override void OnTurnStart() {
         setGridSize();
@@ -356,43 +340,13 @@ public class SpaceMover : Unit
 		SetState(new UnitStateNormal(this));
 	}
 
-
+	public Cell getCell(){
+		return Cell;
+	}
 
 	public int movesPerTurn = 2;
 	public int attacksPerTurn = 1;
 
-	/*
-	//Linear and Light/Hard Turn: need to rework unit/myunit or create our own unit script
-	//Linear
-	public int linearForward = 2;
-	public int linearReverse = -1;
-
-	//Light Turn
-	public int lightTurnTurn = 1;
-	public int lightTurnForward = 1;
-	public int lightTurnReverse = -1;
-
-	//Hard Turn
-	public int hardTurnTurn = 2;
-	public int hardTurnForward = 1;
-	public int hardTurnReverse = -1;
-
-	//Combat
-	public int armor = 2;
-	public int hull = 4;    // which one is regular health
-	public int sheilds = 4;
-
-	//General
-	public int fighterPoints = 100;
-
-	//Weapons
-	public int fighterArc = 120;
-	public int fighterNumber = 0;
-	public string fighterPower = "2d4";
-	public int fighterTorpedo = 2;
-	//end of added variables
-	*/
-	//based off Unit.cs
 
 
 

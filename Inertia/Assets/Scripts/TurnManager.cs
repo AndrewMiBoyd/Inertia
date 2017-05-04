@@ -33,7 +33,20 @@ public class TurnManager : MonoBehaviour {
 			currentSpaceMover.applyManuver (currentSpaceMover.manuver);
 			currentSpaceMover.MoveShip ();
 			currentSpaceMover.ActionPoints = 1;
+			currentSpaceMover.manuver = currentSpaceMover.CreateOrderOfAction (0, 0);
+			Debug.Log (currentSpaceMover.manuver);
 		}
+		for (int i = 0; i < ships.Count-1; i++) {
+			for (int j = i + 1; j < ships.Count; j++) {
+				if (ships[i] != null && ships[j] != null){
+					if (ships [i].GetComponent<SpaceMover> ().getCell () == ships [j].GetComponent<SpaceMover> ().getCell ()) {
+						ships [i].GetComponent<SpaceMover>().TakeDamage(ships [i].GetComponent<SpaceMover>(), 1);
+						ships [j].GetComponent<SpaceMover>().TakeDamage(ships [j].GetComponent<SpaceMover>(), 1);
+					}
+				}
+			}
+		}
+		getShips ();
 	}
 
 	public void advanceTurnState() {
@@ -45,6 +58,7 @@ public class TurnManager : MonoBehaviour {
 		else turnState++;
 		switch (turnState) {
 		case 0:
+			getShips ();
 			eventLog.AddEvent ("Player 1 Maneuver Turn");
 			resetActionPoints (); // resolve attacks(override DealDamage, store damage as string, resolve damage function), reset action points
 			//resolveAllDamage();

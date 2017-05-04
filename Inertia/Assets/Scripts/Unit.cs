@@ -222,7 +222,6 @@ public abstract class Unit : MonoBehaviour
 
 		if (UnitMoved != null)
 			UnitMoved.Invoke(this, new MovementEventArgs(Cell, destinationCell, path));
-
 		/*
 		if (isMoving)
             return;

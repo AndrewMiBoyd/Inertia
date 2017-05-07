@@ -10,6 +10,8 @@ public class TurnManager : MonoBehaviour {
 	public List<GameObject> ships;
     public SpaceMover inUse;
 	public LineRenderer inertiaLine;
+	public AudioSource attackSound;
+	public AudioSource movementSound;
 
 
 
@@ -59,10 +61,11 @@ public class TurnManager : MonoBehaviour {
 		switch (turnState) {
 		case 0:
 			getShips ();
+			movementSound.Stop ();
+			attackSound.Play ();
+			attackSound.SetScheduledEndTime(AudioSettings.dspTime+(5.0f));
 			eventLog.AddEvent ("Player 1 Maneuver Turn");
 			resetActionPoints (); // resolve attacks(override DealDamage, store damage as string, resolve damage function), reset action points
-			//resolveAllDamage();
-			Debug.Log ("ApplyDamageToShips Called");
 			ApplyDamageToShips ();
 			break;
 		case 1:
@@ -70,6 +73,9 @@ public class TurnManager : MonoBehaviour {
 
 			break;
 		case 2:
+			attackSound.Stop ();
+			movementSound.Play ();
+			movementSound.SetScheduledEndTime(AudioSettings.dspTime+(5.0f));
 			eventLog.AddEvent ("Player 1 Attack Turn");
 			moveShips (); // resolve movements, set action points
 			break;

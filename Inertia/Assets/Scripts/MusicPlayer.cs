@@ -8,7 +8,8 @@ public class MusicPlayer : MonoBehaviour {
 	public AudioSource musicSource;
 	public AudioSource attackSound;
 	public AudioSource movementSound;
-	public static MusicPlayer instance = null;                  
+	public static MusicPlayer instance = null;
+	private float maxVolume = 1.0f;
 
 	void Awake ()
 	{
@@ -20,20 +21,33 @@ public class MusicPlayer : MonoBehaviour {
 		DontDestroyOnLoad (gameObject);
 	}
 		
-	public void ChangeMusicVolume (float volume, Slider musicSlider) { 
-		musicSource.volume = volume;
-		musicSlider.value = volume;
+	public void ChangeMusicVolume (float volume, Slider musicSlider) {
+		if (volume <= maxVolume) {
+			musicSource.volume = volume;
+			musicSlider.value = volume;
+		} else {
+			musicSource.volume = maxVolume;
+			musicSlider.value = maxVolume;
+		}
 	}
 
 	public void ChangeEffectsVolume (float volume, Slider effectsSlider) {
-		attackSound.volume = volume;
-		movementSound.volume = volume;
-		effectsSlider.value = volume;
+
+		if (volume <= maxVolume) {
+			attackSound.volume = volume;
+			movementSound.volume = volume;
+			effectsSlider.value = volume;
+		} else {
+			attackSound.volume = maxVolume;
+			movementSound.volume = maxVolume;
+			effectsSlider.value = maxVolume;
+		}
 	}
 		
 	public void ChangeMasterVolume (float volume, Slider musicSlider, Slider effectsSlider) {
-		ChangeMusicVolume (volume, musicSlider);
-		ChangeEffectsVolume (volume, effectsSlider);
+		maxVolume = volume;
+		ChangeMusicVolume (maxVolume, musicSlider);
+		ChangeEffectsVolume (maxVolume, effectsSlider);
 	}
 
 	public void PlayAttackSound() {
@@ -44,5 +58,9 @@ public class MusicPlayer : MonoBehaviour {
 	public void PlayMovementSound() {
 		movementSound.Play ();
 		movementSound.SetScheduledEndTime(AudioSettings.dspTime+(2.0f));
+	}
+
+	private void SetMaxVolume() {
+
 	}
 }

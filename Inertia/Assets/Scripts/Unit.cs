@@ -44,7 +44,7 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public Cell Cell { get; set; }
 
-	public int HitPoints;
+    public int HitPoints;
     public int AttackRange;
     public int AttackFactor;
     public int DefenceFactor;
@@ -72,11 +72,16 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public bool isMoving { get; set; }
 
+    GameObject[] ManeuverButtons;
+
     private static IPathfinding _pathfinder = new AStarPathfinding();
 
     /// <summary>
     /// Method called after object instantiation to initialize fields etc. 
     /// </summary>
+    /// 
+ 
+
     public virtual void Initialize()
     {
         Buffs = new List<Buff>();
@@ -140,9 +145,11 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public virtual void OnUnitSelected()
     {
-        SetState(new UnitStateMarkedAsSelected(this));
+            SetState(new UnitStateMarkedAsSelected(this));
         if (UnitSelected != null)
             UnitSelected.Invoke(this, new EventArgs());
+
+         
     }
     /// <summary>
     /// Method is called when unit is deselected.
@@ -152,6 +159,11 @@ public abstract class Unit : MonoBehaviour
         SetState(new UnitStateMarkedAsFriendly(this));
         if (UnitDeselected != null)
             UnitDeselected.Invoke(this, new EventArgs());
+
+        SpaceMover mover = this.GetComponent<SpaceMover>();
+        if (mover != null)
+            mover.turnManager.inUse = null;
+        
     }
 
     /// <summary>

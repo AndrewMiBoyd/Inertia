@@ -27,21 +27,5 @@ public class GUIController : MonoBehaviour
 		Debug.Log("A Turn Occured");
 	}
 
-    public void ForwardMove(SpaceMover player)
-    {
-        player.CreateOrderOfAction(player.rotationalInertia, 1);
-    }
 
-    public void BackwardMove(SpaceMover player)
-    {
-        player.CreateOrderOfAction(player.rotationalInertia, -1);
-    }
-    public void RightTurn(SpaceMover player)
-    {
-        player.CreateOrderOfAction(player.rotationalInertia+1, 0);
-    }
-    public void LeftTurn(SpaceMover player)
-    {
-        player.CreateOrderOfAction(player.rotationalInertia-1, 0);
-    }
 }

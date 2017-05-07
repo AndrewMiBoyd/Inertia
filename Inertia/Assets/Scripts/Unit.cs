@@ -44,7 +44,7 @@ public abstract class Unit : MonoBehaviour
     /// </summary>
     public Cell Cell { get; set; }
 
-    public int HitPoints;
+	public int HitPoints;
     public int AttackRange;
     public int AttackFactor;
     public int DefenceFactor;

@@ -15,7 +15,7 @@ public class SpaceMover : Unit
     public int rotationalPosition = 0;
     public int rotationalInertia = 0;
     public int gridSize;    
-	public Log log;
+	public Log eventLog;
     public TurnManager turnManager;
 	public string manuver = "";
     public int rotationalDir = 0;
@@ -393,13 +393,16 @@ public class SpaceMover : Unit
 		if (!IsUnitAttackable(other, Cell))
 			return;
 		int dieRoll = UnityEngine.Random.Range(0, 99);
-		if (dieRoll < (101 - (Cell.GetDistance(other.Cell) * Cell.GetDistance(other.Cell)))){
-			Debug.Log("Hit!");
-			MarkAsAttacking(other);
+		if (dieRoll < (101 - (Cell.GetDistance (other.Cell) * Cell.GetDistance (other.Cell)))) {
+			Debug.Log ("Hit!");
+			eventLog.AddEvent (this.name + " hit " + other.name + "!");
+			MarkAsAttacking (other);
 			//SpaceMover[] shipPair = new SpaceMover[2];
 			//shipPair [0] = this.GetComponent<SpaceMover>();
 			//shipPair [1] = other.GetComponent<SpaceMover>();
-			turnManager.shootingShips.Add (other.GetComponent<SpaceMover>());
+			turnManager.shootingShips.Add (other.GetComponent<SpaceMover> ());
+		} else {
+			eventLog.AddEvent ("Attack missed!");
 		}
 		ActionPoints--;
 		if (ActionPoints == 0)

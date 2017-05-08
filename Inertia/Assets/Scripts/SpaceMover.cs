@@ -178,7 +178,7 @@ public class SpaceMover : Unit
 			}
 
             //	Debug.Log(currentPosition);
-            if (currentPosition >=0 && currentPosition < gridSize*gridSize)
+            if (currentPosition >=0 && currentPosition < gridSize*gridSize && Cell.GetDistance(cellList[currentPosition]) < 10)
 			    cellList [currentPosition].MarkAsReachable ();
 
 			SimplifyHexVector3 (ref sourcePosition);
@@ -276,12 +276,24 @@ public class SpaceMover : Unit
 
 		List<Cell> cellList = cellgrid.Cells;
 
-		SimplifyInertia ();
-		Cell destination = cellList[cellList.IndexOf(Cell) + inertiaI * gridSize + jModifier()];
-		List<Cell> destinationList = new List<Cell> ();
-		destinationList.Add (destination);
-        Move (destination, destinationList);
+        int destinationIndex = cellList.IndexOf(Cell) + inertiaI * gridSize + jModifier();
 
+        if (destinationIndex >= 0 && destinationIndex < gridSize * gridSize)
+        {
+            SimplifyInertia();
+            Cell destination = cellList[destinationIndex];
+            List<Cell> destinationList = new List<Cell>();
+            destinationList.Add(destination);
+            if (Cell.GetDistance(destination) > (Math.Abs(inertiaI) + Math.Abs(inertiaJ)))
+            {
+                this.Defend(this, 1);
+            }
+            Move(destination, destinationList);
+        }
+        else
+        {
+            this.Defend(this, 1);
+        }
 	}
 		
 	public int jModifier(){

@@ -54,7 +54,6 @@ public class TurnManager : MonoBehaviour {
 	public void advanceTurnState() {
         inUse = null;
 		inertiaLine.SetPosition (1, inertiaLine.GetPosition(0));
-
         if (turnState >= 3)
 			turnState = 0;
 		else turnState++;
@@ -66,18 +65,21 @@ public class TurnManager : MonoBehaviour {
 			//resolveAllDamage();
 			Debug.Log ("ApplyDamageToShips Called");
 			ApplyDamageToShips ();
-			break;
+            GameObject.Find("Button").GetComponentInChildren<UnityEngine.UI.Text>().text = "End Player 1 Movement Turn";
+            break;
 		case 1:
 			eventLog.AddEvent ("Player 2 Maneuver Turn");
-
-			break;
+            GameObject.Find("Button").GetComponentInChildren<UnityEngine.UI.Text>().text = "End Player 2 Movement Turn";
+            break;
 		case 2:
 			eventLog.AddEvent ("Player 1 Attack Turn");
 			moveShips (); // resolve movements, set action points
-			break;
+            GameObject.Find("Button").GetComponentInChildren<UnityEngine.UI.Text>().text = "End Player 1 Attack Turn";
+            break;
 		case 3:
 			eventLog.AddEvent ("Player 2 Attack Turn");
-			break;
+            GameObject.Find("Button").GetComponentInChildren<UnityEngine.UI.Text>().text = "End Player 2 Attack Turn";
+            break;
 		}
 	}
 

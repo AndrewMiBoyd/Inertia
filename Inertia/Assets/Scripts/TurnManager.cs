@@ -11,6 +11,7 @@ public class TurnManager : MonoBehaviour {
     public SpaceMover inUse;
 	public LineRenderer inertiaLine;
 
+
     public GameObject[] maneuverButtons;
 
 
@@ -60,10 +61,9 @@ public class TurnManager : MonoBehaviour {
 		switch (turnState) {
 		case 0:
 			getShips ();
+			MusicPlayer.instance.PlayAttackSound ();
 			eventLog.AddEvent ("Player 1 Maneuver Turn");
 			resetActionPoints (); // resolve attacks(override DealDamage, store damage as string, resolve damage function), reset action points
-			//resolveAllDamage();
-			Debug.Log ("ApplyDamageToShips Called");
 			ApplyDamageToShips ();
             GameObject.Find("Button").GetComponentInChildren<UnityEngine.UI.Text>().text = "End Player 1 Movement Turn";
             break;
@@ -72,6 +72,7 @@ public class TurnManager : MonoBehaviour {
             GameObject.Find("Button").GetComponentInChildren<UnityEngine.UI.Text>().text = "End Player 2 Movement Turn";
             break;
 		case 2:
+			MusicPlayer.instance.PlayMovementSound ();
 			eventLog.AddEvent ("Player 1 Attack Turn");
 			moveShips (); // resolve movements, set action points
             GameObject.Find("Button").GetComponentInChildren<UnityEngine.UI.Text>().text = "End Player 1 Attack Turn";

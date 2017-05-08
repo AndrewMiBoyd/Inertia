@@ -11,6 +11,8 @@ public class TurnManager : MonoBehaviour {
     public SpaceMover inUse;
 	public LineRenderer inertiaLine;
 
+    public GameObject[] maneuverButtons;
+
 
 
 	public void getShips() {
@@ -118,16 +120,33 @@ public class TurnManager : MonoBehaviour {
     }
     // Use this for initialization
     void Start () {
-		getShips ();
+        getShips ();
 		eventLog.AddEvent ("Player 1 Maneuver Turn");
 		resetActionPoints ();
-	}
-	void Update() {
-		
-		if (inUse != null && (turnState ==1 || turnState == 0)) {
-			Vector3 position = inUse.transform.position;
-			inertiaLine.SetPosition (0, position);
-			inertiaLine.SetPosition (1, inUse.getFuturePosition ());
-		}
+
+        maneuverButtons = GameObject.FindGameObjectsWithTag("ManeuverButtons");
+    }
+	void Update()
+    {
+
+        if (inUse != null && (turnState == 1 || turnState == 0))
+        {
+            Vector3 position = inUse.transform.position;
+            inertiaLine.SetPosition(0, position);
+            inertiaLine.SetPosition(1, inUse.getFuturePosition());
+
+            foreach (GameObject i in maneuverButtons)
+            {
+                i.SetActive(true);
+            }
+        }
+        else
+        {
+            foreach (GameObject i in maneuverButtons)
+            {
+                i.SetActive(false);
+            }
+        }
+        
 	}
 }

@@ -15,10 +15,11 @@ public class SpaceMover : Unit
     public int rotationalPosition = 0;
     public int rotationalInertia = 0;
     public int gridSize;    
-	public Log eventLog;
+	public Log log;
     public TurnManager turnManager;
 	public string manuver = "";
     public int rotationalDir = 0;
+   
 
     public void setGridSize()
     {
@@ -313,24 +314,23 @@ public class SpaceMover : Unit
 	}
 
 	private int testCount = 0;
-	public override void OnTurnStart() {
+    public override void OnTurnStart()
+    {
         setGridSize();
-		MovementPoints = TotalMovementPoints;
-		//ActionPoints = TotalActionPoints;
+        MovementPoints = TotalMovementPoints;
+        //ActionPoints = TotalActionPoints;
 
-		SetState(new UnitStateMarkedAsFriendly(this));
-
+        SetState(new UnitStateMarkedAsFriendly(this));
+    }
 		//MoveShip ();
 
 
 		//TODO 100
 		//int number = cellgrid.GetComponents<RectangularHexGridGenerator>
-	}
-
-	/// <summary>
-	/// Method is called at the end of each turn.
-	/// </summary>
-	public override void OnTurnEnd()
+    /// <summary>
+    /// Method is called at the end of each turn.
+    /// </summary>
+    public override void OnTurnEnd()
 	{
 		Debug.Log("Space SpaceMover OnTurnEnd called");
 		Buffs.FindAll(b => b.Duration == 0).ForEach(b => { b.Undo(this); });
@@ -393,16 +393,13 @@ public class SpaceMover : Unit
 		if (!IsUnitAttackable(other, Cell))
 			return;
 		int dieRoll = UnityEngine.Random.Range(0, 99);
-		if (dieRoll < (101 - (Cell.GetDistance (other.Cell) * Cell.GetDistance (other.Cell)))) {
-			Debug.Log ("Hit!");
-			eventLog.AddEvent (this.name + " hit " + other.name + "!");
-			MarkAsAttacking (other);
+		if (dieRoll < (101 - (Cell.GetDistance(other.Cell) * Cell.GetDistance(other.Cell)))){
+			Debug.Log("Hit!");
+			MarkAsAttacking(other);
 			//SpaceMover[] shipPair = new SpaceMover[2];
 			//shipPair [0] = this.GetComponent<SpaceMover>();
 			//shipPair [1] = other.GetComponent<SpaceMover>();
-			turnManager.shootingShips.Add (other.GetComponent<SpaceMover> ());
-		} else {
-			eventLog.AddEvent ("Attack missed!");
+			turnManager.shootingShips.Add (other.GetComponent<SpaceMover>());
 		}
 		ActionPoints--;
 		if (ActionPoints == 0)
@@ -465,7 +462,9 @@ public class SpaceMover : Unit
 		SetHighlighterColor(new Color(0,1,0));
         turnManager.inUse = this;
 	}
-	public override void MarkAsFinished()
+
+
+public override void MarkAsFinished()
 	{
 		SetColor(PlayerColor - Color.gray);
 		SetHighlighterColor(new Color(0.8f, 1, 0.8f));
@@ -475,7 +474,7 @@ public class SpaceMover : Unit
 		SetColor(PlayerColor);
 		SetHighlighterColor(Color.white);
 		if (Highlighter == null) return;
-		Highlighter.position = transform.position + new Vector3(0, 0, 1.52f);
+		    Highlighter.position = transform.position + new Vector3(0, 0, 1.52f);
 	}
 
 	private void UpdateHpBar()
